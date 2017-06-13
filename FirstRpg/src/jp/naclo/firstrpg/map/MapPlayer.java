@@ -54,21 +54,23 @@ public class MapPlayer extends MapMoveObject{
 			point_y = point_y + 2;
 		}
 
-		if(direction == MAP_CONST.DIRECTION_RIGHT){
-			if(myMap.getBox(box_x + 1, box_y).getState() > 0){
-				return;
-			}
-		}else if(direction == MAP_CONST.DIRECTION_UP){
-			if(myMap.getBox(box_x, box_y - 1).getState() > 0){
-				return;
-			}
-		}else if(direction == MAP_CONST.DIRECTION_DOUN){
-			if(myMap.getBox(box_x, box_y + 1).getState() > 0){
-				return;
-			}
-		}else if(direction == MAP_CONST.DIRECTION_LEFY){
-			if(myMap.getBox(box_x - 1, box_y).getState() > 0){
-				return;
+		if(!this.isMoving()){
+			if(direction == MAP_CONST.DIRECTION_RIGHT){
+				if(myMap.getBox(box_x + 1, box_y).getState() == MAP_CONST.MAP_STATE_BLOCK){
+					return;
+				}
+			}else if(direction == MAP_CONST.DIRECTION_UP){
+				if(myMap.getBox(box_x, box_y - 1).getState() == MAP_CONST.MAP_STATE_BLOCK){
+					return;
+				}
+			}else if(direction == MAP_CONST.DIRECTION_DOUN){
+				if(myMap.getBox(box_x, box_y + 1).getState() == MAP_CONST.MAP_STATE_BLOCK){
+					return;
+				}
+			}else if(direction == MAP_CONST.DIRECTION_LEFY){
+				if(myMap.getBox(box_x - 1, box_y).getState() == MAP_CONST.MAP_STATE_BLOCK){
+					return;
+				}
 			}
 		}
 
@@ -78,33 +80,59 @@ public class MapPlayer extends MapMoveObject{
 					next_x = box_x + 1;
 					next_y = box_y;
 					point_x = point_x + 2;
+					if(myMap.getBox(next_x, next_y).getState() == MAP_CONST.MAP_STATE_ENPTY){
+						myMap.setBoxState(next_x, next_y, MAP_CONST.MAP_STATE_BLOCK);
+					}
 				}
 			}else if(direction == MAP_CONST.DIRECTION_UP){
 				if(sinfo.getKeyRepeat(KEY_STATE.UP)){
 					next_x = box_x;
 					next_y = box_y - 1;
 					point_y = point_y - 2;
+					if(myMap.getBox(next_x, next_y).getState() == MAP_CONST.MAP_STATE_ENPTY){
+						myMap.setBoxState(next_x, next_y, MAP_CONST.MAP_STATE_BLOCK);
+					}
 				}
 			}else if(direction == MAP_CONST.DIRECTION_DOUN){
 				if(sinfo.getKeyRepeat(KEY_STATE.DOWN)){
 					next_x = box_x;
 					next_y = box_y + 1;
 					point_y = point_y + 2;
+					if(myMap.getBox(next_x, next_y).getState() == MAP_CONST.MAP_STATE_ENPTY){
+						myMap.setBoxState(next_x, next_y, MAP_CONST.MAP_STATE_BLOCK);
+					}
 				}
 			}else if(direction == MAP_CONST.DIRECTION_LEFY){
 				if(sinfo.getKeyRepeat(KEY_STATE.LEFT)){
 					next_x = box_x - 1;
 					next_y = box_y;
 					point_x = point_x - 2;
+					if(myMap.getBox(next_x, next_y).getState() == MAP_CONST.MAP_STATE_ENPTY){
+						myMap.setBoxState(next_x, next_y, MAP_CONST.MAP_STATE_BLOCK);
+					}
 				}
 			}
 		}
-		
+
 		if(point_x % MAP_CONST.MAP_BOX_SIZE == 0 && point_y % MAP_CONST.MAP_BOX_SIZE == 0){
-			box_x = next_x;
-			box_y = next_y;
-			next_x = box_x;
-			next_y = box_y;
+			if(isMoving()){
+				myMap.setBoxState(box_x,box_y, MAP_CONST.MAP_STATE_ENPTY);
+				box_x = next_x;
+				box_y = next_y;
+				next_x = box_x;
+				next_y = box_y;
+			}
 		}
+	}
+	public boolean isMoving() {
+		return (box_x != next_x || box_y != next_y);
+	}
+	public void setPosition(int x, int y) {
+		box_x = x;
+		box_y = y;
+		point_x = MAP_CONST.MAP_BOX_SIZE * x;
+		point_y = MAP_CONST.MAP_BOX_SIZE * y;
+		next_x = box_x;
+		next_y = box_y;
 	}
 }

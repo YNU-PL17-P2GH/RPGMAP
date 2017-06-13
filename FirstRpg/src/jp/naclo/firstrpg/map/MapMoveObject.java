@@ -13,6 +13,8 @@ import jp.naclo.firstrpg.ShareInfo;
 public class MapMoveObject extends MapObject{
 	protected int point_x, point_y;
 	protected int next_x, next_y;		//移動先マス座標
+	protected BufferedImage objImg[];
+	protected int animeCount;
 	protected int directNum;			//向きの数
 	protected int imgNum;				//画像枚数
 	protected int direction;			//現在の向き
@@ -49,6 +51,7 @@ public class MapMoveObject extends MapObject{
 		point_y = MAP_CONST.MAP_BOX_SIZE * by;
 		next_x = box_x;
 		next_y = box_y;
+		myMap.setBoxState(box_x, box_y, MAP_CONST.MAP_STATE_BLOCK);
 		direction = direct;
 	}
 
